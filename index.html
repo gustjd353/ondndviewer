@@ -23,7 +23,7 @@
     #mapImage { max-width: 1200px; width: 100%; height: auto; object-fit: contain; }
     .resizer { width: 5px; background: #ccc; cursor: col-resize; }
     .pdf-area { flex-grow: 1; background: #ffffff; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; border-left: 1px solid #ddd; scroll-behavior: smooth; transition: width 0.2s; }
-    canvas { margin: 0; padding: 0; border: none; display: block; width: 100%; height: auto; }
+    canvas { margin: 0; padding: 0; border: none; display: block; width: auto; max-width: 100%; height: auto; }
   </style>
 </head>
 <body>
@@ -109,8 +109,8 @@ loadingTask.promise.then(function(pdf) {
   function renderPage(num) {
     pdf.getPage(num).then(function(page) {
       let scale = 2.0;
-      if (mapFolder === 'ep1' && (num >= 16 && num <= 20)) scale = 1.5;
-      if (mapFolder === 'ep3' && (num >= 125 && num <= 127)) scale = 1.5;
+      if (mapFolder === 'ep1' && (num >= 16 && num <= 20)) scale = 1.2;
+      if (mapFolder === 'ep3' && (num >= 125 && num <= 127)) scale = 1.2;
       const viewport = page.getViewport({ scale: scale });
       const canvas = document.createElement('canvas');
       canvas.dataset.pageNumber = num;
