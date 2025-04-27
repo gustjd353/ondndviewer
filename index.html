@@ -57,6 +57,8 @@ const content = document.getElementById('content');
 const mapImage = document.getElementById('mapImage');
 content.innerHTML = '';
 
+const renderedPages = {};
+
 function getMapImage(pageNumber) {
   if (mapFolder === "ep1") {
     if (pageNumber >= 1 && pageNumber <= 15) return "./maps/ep1/map1.png";
@@ -105,23 +107,49 @@ function getMapImage(pageNumber) {
 const loadingTask = pdfjsLib.getDocument(pdfUrl);
 loadingTask.promise.then(function(pdf) {
   content.innerHTML = '';
-  let pageNumber = 1;
-  function renderPage(num) {
-    pdf.getPage(num).then(function(page) {
-      const scale = 2.0;
-      const viewport = page.getViewport({ scale: scale });
-      const canvas = document.createElement('canvas');
-      canvas.dataset.pageNumber = num;
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      const renderContext = { canvasContext: context, viewport: viewport };
-      page.render(renderContext);
-      content.appendChild(canvas);
-      if (num < pdf.numPages) setTimeout(() => renderPage(num + 1), 0);
+  const numPages = pdf.numPages;
+  
+  function renderVisiblePages() {
+    const canvases = document.querySelectorAll('.pdf-area canvas');
+    const viewportTop = 0;
+    const viewportBottom = window.innerHeight;
+
+    canvases.forEach(canvas => {
+      const rect = canvas.getBoundingClientRect();
+      if (rect.bottom < viewportTop - 1000 || rect.top > viewportBottom + 1000) {
+        if (canvas.parentNode) {
+          canvas.parentNode.removeChild(canvas);
+          delete renderedPages[canvas.dataset.pageNumber];
+        }
+      }
     });
+
+    const scrollTop = document.querySelector('.pdf-area').scrollTop;
+    const pageHeight = 1000;
+    const currentPage = Math.floor(scrollTop / pageHeight) + 1;
+
+    for (let num = Math.max(1, currentPage - 5); num <= Math.min(numPages, currentPage + 5); num++) {
+      if (!renderedPages[num]) {
+        pdf.getPage(num).then(function(page) {
+          const scale = 1.5;
+          const viewport = page.getViewport({ scale: scale });
+          const canvas = document.createElement('canvas');
+          canvas.dataset.pageNumber = num;
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          const renderContext = { canvasContext: context, viewport: viewport };
+          page.render(renderContext);
+          content.appendChild(canvas);
+          renderedPages[num] = true;
+        });
+      }
+    }
   }
-  renderPage(pageNumber);
+
+  document.querySelector('.pdf-area').addEventListener('scroll', renderVisiblePages);
+  window.addEventListener('load', renderVisiblePages);
+  renderVisiblePages();
 });
 
 document.querySelector('.pdf-area').addEventListener('scroll', () => {
