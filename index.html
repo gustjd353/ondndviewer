@@ -30,10 +30,10 @@
 
 <nav>
   <h2>에버론 : 아르카니스 마법학교</h2>
-  <a href="?page=ep1.pdf&map=ep1">[EP1] 마법학교와 아주 긴 시간표</a>
-  <a href="?page=ep2.pdf&map=ep2">[EP2] 마법학교와 첫번째 수업</a>
-  <a href="?page=ep3.pdf&map=ep3">[EP3] 마법학교와 순수한 피</a>
-  <a href="?page=ep4.pdf&map=ep4">[EP4] 마법학교와 두번째 날 수업</a>
+  <a href="?page=ep1.pdf&map=ep1">[EP1] 아저 긴 시간표</a>
+  <a href="?page=ep2.pdf&map=ep2">[EP2] 첫번째 수업</a>
+  <a href="?page=ep3.pdf&map=ep3">[EP3] 순수한 피</a>
+  <a href="?page=ep4.pdf&map=ep4">[EP4] 두번째 날 수업</a>
 </nav>
 
 <div class="container">
@@ -56,8 +56,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 const content = document.getElementById('content');
 const mapImage = document.getElementById('mapImage');
 content.innerHTML = '';
-
-const renderedPages = {};
 
 function getMapImage(pageNumber) {
   if (mapFolder === "ep1") {
