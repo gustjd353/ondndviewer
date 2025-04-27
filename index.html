@@ -108,9 +108,7 @@ loadingTask.promise.then(function(pdf) {
   let pageNumber = 1;
   function renderPage(num) {
     pdf.getPage(num).then(function(page) {
-      let scale = 2.0;
-      if (mapFolder === 'ep1' && (num >= 16 && num <= 20)) scale = 1.2;
-      if (mapFolder === 'ep3' && (num >= 125 && num <= 127)) scale = 1.2;
+      const scale = 2.0;
       const viewport = page.getViewport({ scale: scale });
       const canvas = document.createElement('canvas');
       canvas.dataset.pageNumber = num;
@@ -126,12 +124,11 @@ loadingTask.promise.then(function(pdf) {
   renderPage(pageNumber);
 });
 
-function updateCurrentMapByScroll() {
+document.querySelector('.pdf-area').addEventListener('scroll', () => {
   const canvases = document.querySelectorAll('.pdf-area canvas');
   let closestCanvas = null;
   let minDistance = Infinity;
   const viewportCenter = window.innerHeight / 2;
-
   canvases.forEach(canvas => {
     const rect = canvas.getBoundingClientRect();
     const canvasCenter = rect.top + rect.height / 2;
@@ -141,7 +138,6 @@ function updateCurrentMapByScroll() {
       closestCanvas = canvas;
     }
   });
-
   if (closestCanvas) {
     const currentPage = parseInt(closestCanvas.dataset.pageNumber, 10);
     const newSrc = getMapImage(currentPage);
@@ -150,9 +146,7 @@ function updateCurrentMapByScroll() {
       mapImage.src = newSrc;
     }
   }
-}
-
-document.querySelector('.pdf-area').addEventListener('scroll', updateCurrentMapByScroll);
+});
 
 const resizer = document.getElementById('resizer');
 const mapArea = document.querySelector('.map-area');
