@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>에버론 : 아르카니스 마법학교</title>
+  <title>에버론 : 아르카닉스 마법학교</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <link href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_8Gmarket@1.0/GmarketSansMedium.woff2" rel="stylesheet">
   <style>
@@ -29,7 +29,7 @@
 <body>
 
 <nav>
-  <h2>에버론 : 아르카니스 마법학교</h2>
+  <h2>에버론 : 아르카닉스 마법학교</h2>
   <a href="?page=ep1.pdf&map=ep1">[EP1] 아르카닉스 마법학교와 아주 긴 시간표</a>
   <a href="?page=ep2.pdf&map=ep2">[EP2] 아르카닉스 마법학교와 첫번째 수업</a>
   <a href="?page=ep3.pdf&map=ep3">[EP3] 아르카닉스 마법학교와 순수한 피</a>
@@ -42,9 +42,7 @@
     <img src="./maps/ep1/map1.png" alt="맵 이미지" id="mapImage">
   </div>
   <div class="resizer" id="resizer"></div>
-  <div class="pdf-area" id="content">
-    <h1>PDF 로딩 중...</h1>
-  </div>
+  <div class="pdf-area" id="content"></div>
 </div>
 
 <script>
@@ -56,50 +54,8 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 const content = document.getElementById('content');
 const mapImage = document.getElementById('mapImage');
-content.innerHTML = '';
+
 function getMapImage(pageNumber) {
-  if (mapFolder === "ep1") {
-    if (pageNumber >= 1 && pageNumber <= 15) return "./maps/ep1/map1.png";
-    if (pageNumber >= 16 && pageNumber <= 18) return "./maps/ep1/handout1.png";
-    if (pageNumber >= 19 && pageNumber <= 20) return "./maps/ep1/handout2.png";
-    if (pageNumber >= 21 && pageNumber <= 31) return "./maps/ep1/map1.png";
-    if (pageNumber >= 32 && pageNumber <= 34) return "./maps/ep1/map2.png";
-    if (pageNumber >= 35 && pageNumber <= 67) return "./maps/ep1/map3.png";
-    if (pageNumber >= 68 && pageNumber <= 72) return "./maps/ep1/map2.png";
-    if (pageNumber >= 73 && pageNumber <= 78) return "./maps/ep1/map4.png";
-    if (pageNumber >= 79 && pageNumber <= 85) return "./maps/ep1/map5.png";
-  }
-  if (mapFolder === "ep2") {
-    if (pageNumber >= 1 && pageNumber <= 62) return "./maps/ep2/map1.png";
-    if (pageNumber >= 63 && pageNumber <= 69) return "./maps/ep2/map2.png";
-    if (pageNumber >= 70 && pageNumber <= 86) return "./maps/ep2/map3.png";
-    if (pageNumber >= 87 && pageNumber <= 89) return "./maps/ep2/map4.png";
-    if (pageNumber >= 90 && pageNumber <= 104) return "./maps/ep2/map5.png";
-    if (pageNumber >= 105 && pageNumber <= 118) return "./maps/ep2/map6.png";
-  }
-  if (mapFolder === "ep3") {
-    if (pageNumber >= 1 && pageNumber <= 38) return "./maps/ep3/map1.png";
-    if (pageNumber >= 39 && pageNumber <= 95) return "./maps/ep3/map2.png";
-    if (pageNumber >= 96 && pageNumber <= 112) return "./maps/ep3/map3.png";
-    if (pageNumber >= 113 && pageNumber <= 114) return "./maps/ep3/map4.png";
-    if (pageNumber >= 115 && pageNumber <= 120) return "./maps/ep3/map5.png";
-    if (pageNumber >= 121 && pageNumber <= 124) return "./maps/ep3/map4.png";
-    if (pageNumber >= 125 && pageNumber <= 127) return "./maps/ep3/handout1.png";
-    if (pageNumber >= 128 && pageNumber <= 137) return "./maps/ep3/map4.png";
-    if (pageNumber >= 138 && pageNumber <= 160) return "./maps/ep3/map6.png";
-    if (pageNumber >= 161 && pageNumber <= 197) return "./maps/ep3/map7.png";
-    if (pageNumber >= 198 && pageNumber <= 208) return "./maps/ep3/map6.png";
-  }
-  if (mapFolder === "ep4") {
-    if (pageNumber >= 1 && pageNumber <= 18) return "./maps/ep4/map1.png";
-    if (pageNumber >= 19 && pageNumber <= 20) return "./maps/ep4/map2.png";
-    if (pageNumber === 21) return "./maps/ep4/map3.png";
-    if (pageNumber >= 22 && pageNumber <= 41) return "./maps/ep4/map2.png";
-    if (pageNumber >= 42 && pageNumber <= 66) return "./maps/ep4/map4.png";
-    if (pageNumber >= 67 && pageNumber <= 90) return "./maps/ep4/map5.png";
-    if (pageNumber >= 91 && pageNumber <= 92) return "./maps/ep4/map6.png";
-    if (pageNumber >= 93 && pageNumber <= 113) return "./maps/ep4/map7.png";
-  }
   if (mapFolder === "ep5") {
     if (pageNumber === 1) return "./maps/ep5/map1.png";
     if (pageNumber >= 2 && pageNumber <= 5) return "./maps/ep5/map2.png";
@@ -131,77 +87,68 @@ function getMapImage(pageNumber) {
     if (pageNumber >= 251 && pageNumber <= 257) return "./maps/ep5/map28.png";
     if (pageNumber >= 258 && pageNumber <= 277) return "./maps/ep5/map3.png";
   }
-
   return `./maps/${mapFolder}/map1.png`;
 }
 
-const loadingTask = pdfjsLib.getDocument(pdfUrl);
-loadingTask.promise.then(function(pdf) {
-  content.innerHTML = '';
-  const numPages = pdf.numPages;
+let pdfDoc = null;
+let observer = null;
 
-  function renderPage(num) {
-    pdf.getPage(num).then(function(page) {
-      const scale = 1.5;
-      const viewport = page.getViewport({ scale: scale });
-      const canvas = document.createElement('canvas');
-      canvas.dataset.pageNumber = num;
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      const renderContext = { canvasContext: context, viewport: viewport };
-      page.render(renderContext);
-      content.appendChild(canvas);
-      if (num < numPages) {
-        setTimeout(() => renderPage(num + 1), 0);
-      }
-    });
+pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+  pdfDoc = pdf;
+  for (let num = 1; num <= pdf.numPages; num++) {
+    const canvas = document.createElement('canvas');
+    canvas.dataset.pageNumber = num;
+    canvas.classList.add('pdf-page');
+    content.appendChild(canvas);
   }
 
-  renderPage(1);
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const canvas = entry.target;
+        const pageNumber = parseInt(canvas.dataset.pageNumber);
+        if (!canvas.dataset.rendered) {
+          pdfDoc.getPage(pageNumber).then(page => {
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale: scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            const renderContext = { canvasContext: canvas.getContext('2d'), viewport: viewport };
+            page.render(renderContext);
+            canvas.dataset.rendered = true;
+          });
+        }
+      }
+    });
+  }, { root: content, threshold: 0.1 });
+
+  document.querySelectorAll('.pdf-page').forEach(canvas => observer.observe(canvas));
 });
 
-document.querySelector('.pdf-area').addEventListener('scroll', () => {
-  const canvases = document.querySelectorAll('.pdf-area canvas');
-  let closestCanvas = null;
-  let minDistance = Infinity;
-  const viewportCenter = window.innerHeight / 2;
+// 맵 이미지 업데이트
+content.addEventListener('scroll', () => {
+  const canvases = document.querySelectorAll('.pdf-page');
+  let closest = null;
+  let minDist = Infinity;
+  const midY = window.innerHeight / 2;
+
   canvases.forEach(canvas => {
     const rect = canvas.getBoundingClientRect();
-    const canvasCenter = rect.top + rect.height / 2;
-    const distance = Math.abs(viewportCenter - canvasCenter);
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestCanvas = canvas;
+    const center = rect.top + rect.height / 2;
+    const dist = Math.abs(midY - center);
+    if (dist < minDist) {
+      minDist = dist;
+      closest = canvas;
     }
   });
-  if (closestCanvas) {
-    const currentPage = parseInt(closestCanvas.dataset.pageNumber, 10);
-    const newSrc = getMapImage(currentPage);
-    const currentSrc = mapImage.src.replace(window.location.origin + '/', './');
-    if (currentSrc !== newSrc) {
+
+  if (closest) {
+    const pageNumber = parseInt(closest.dataset.pageNumber, 10);
+    const newSrc = getMapImage(pageNumber);
+    if (!mapImage.src.endsWith(newSrc.replace('./', ''))) {
       mapImage.src = newSrc;
     }
   }
-});
-
-const resizer = document.getElementById('resizer');
-const mapArea = document.querySelector('.map-area');
-let isResizing = false;
-resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'col-resize'; });
-document.addEventListener('mousemove', e => {
-  if (!isResizing) return;
-  const containerRect = document.querySelector('.container').getBoundingClientRect();
-  let newMapWidth = e.clientX - containerRect.left;
-  let totalWidth = containerRect.width;
-  if (newMapWidth < 200) newMapWidth = 200;
-  if (newMapWidth > totalWidth - 200) newMapWidth = totalWidth - 200;
-  mapArea.style.width = newMapWidth + 'px';
-});
-document.addEventListener('mouseup', () => { if (isResizing) { isResizing = false; document.body.style.cursor = 'default'; } });
-window.addEventListener('load', () => {
-  const containerRect = document.querySelector('.container').getBoundingClientRect();
-  mapArea.style.width = (containerRect.width - 200) + 'px';
 });
 </script>
 
