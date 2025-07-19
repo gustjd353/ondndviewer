@@ -170,11 +170,26 @@
       const mapImage = document.getElementById('mapImage');
 
       function getMapImage(pageNumber) {
-        const fixedMapEpisodes = ["ep9", "ep10", "ep11", "ep12", "ep13", "ep14"];
+        // ep9~ep13 fixed map1
+        const fixedMapEpisodes = ["ep9", "ep10", "ep11", "ep12", "ep13"];
         if (fixedMapEpisodes.includes(mapFolder)) {
           return `./maps/${mapFolder}/map1.png`;
         }
 
+        // ep14 dynamic ranges
+        if (mapFolder === "ep14") {
+          if (pageNumber >= 1 && pageNumber <= 3)   return "./maps/ep14/map1.png";
+          if (pageNumber >= 4 && pageNumber <= 11)  return "./maps/ep14/map2.png";
+          if (pageNumber >= 12 && pageNumber <= 31) return "./maps/ep14/map3.png";
+          if (pageNumber >= 32 && pageNumber <= 45) return "./maps/ep14/map4.png";
+          if (pageNumber >= 46 && pageNumber <= 55) return "./maps/ep14/map5.png";
+          if (pageNumber >= 56 && pageNumber <= 58) return "./maps/ep14/map6.png";
+          if (pageNumber >= 59 && pageNumber <= 72) return "./maps/ep14/map7.png";
+          if (pageNumber >= 73 && pageNumber <= 74) return "./maps/ep14/map8.png";
+          if (pageNumber >= 75 && pageNumber <= 83) return "./maps/ep14/map9.png";
+        }
+
+        // 기존 ep5 logic 유지
         if (mapFolder === "ep5") {
           if (pageNumber === 1) return "./maps/ep5/map1.png";
           if (pageNumber >= 2 && pageNumber <= 5) return "./maps/ep5/map2.png";
@@ -208,19 +223,7 @@
           if (pageNumber >= 258 && pageNumber <= 277) return "./maps/ep5/map3.png";
         }
 
-        if (mapFolder === "ep14") {
-  if (pageNumber >= 1 && pageNumber <= 3) return "./maps/ep14/map1.png";
-  if (pageNumber >= 4 && pageNumber <= 11) return "./maps/ep14/map2.png";
-  if (pageNumber >= 12 && pageNumber <= 31) return "./maps/ep14/map3.png";
-  if (pageNumber >= 32 && pageNumber <= 45) return "./maps/ep14/map4.png";
-  if (pageNumber >= 46 && pageNumber <= 55) return "./maps/ep14/map5.png";
-  if (pageNumber >= 56 && pageNumber <= 58) return "./maps/ep14/map6.png";
-  if (pageNumber >= 59 && pageNumber <= 72) return "./maps/ep14/map7.png";
-  if (pageNumber >= 73 && pageNumber <= 74) return "./maps/ep14/map8.png";
-  if (pageNumber >= 75 && pageNumber <= 83) return "./maps/ep14/map9.png";
-}
-
-
+        // 기본
         return `./maps/${mapFolder}/map1.png`;
       }
 
