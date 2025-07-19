@@ -12,9 +12,9 @@
         font-weight: normal;
         font-style: normal;
       }
-  
+
       * { margin: 0; padding: 0; box-sizing: border-box; }
-  
+
       body {
         font-family: 'RIDIBatang', sans-serif;
         font-size: 10px;
@@ -22,38 +22,33 @@
         display: flex;
         overflow: hidden;
       }
-  
+
       nav {
-        width: 300px; /* 네비게이션 넓이 */
+        width: 300px;
         background: #f5f5f5;
         padding: 20px;
         overflow-y: auto;
         border-right: 1px solid #ddd;
         flex-shrink: 0;
       }
-  
-      nav h2 { /* 아르카닉스 마법학교 제목 */
+
+      nav h2 {
         font-size: 18px;
         margin-bottom: 20px;
       }
-  
-      nav a {
-  font-size: 12px;
-  display: block;
-  margin-bottom: 3px;
-  color: black;
-  text-decoration: none;
-  padding: 2px 6px;  /* ← 이건 항상 유지하려면 여기서 */
-  border-radius: 4px;
-}
 
-nav a:hover {
-  background-color: #b2b2b2;  /* 마우스 올렸을 때 색 변화 */
-}
-}
+      nav a {
+        font-size: 12px;
+        display: block;
+        margin-bottom: 3px;
+        color: black;
+        text-decoration: none;
+        padding: 2px 6px;
+        border-radius: 4px;
       }
-  
+
       nav a:hover {
+        background-color: #b2b2b2;
         text-decoration: underline;
       }
 
@@ -63,13 +58,9 @@ nav a:hover {
         margin-bottom: 5px;
         cursor: pointer;
       }
-  
+
       nav details[open] summary {
         font-weight: bold;
-      }
-  
-      nav details a {
-        margin-left: 0cqh;
       }
 
       .container {
@@ -77,7 +68,7 @@ nav a:hover {
         display: flex;
         overflow: hidden;
       }
-  
+
       .map-area {
         width: 60%;
         min-width: 200px;
@@ -90,20 +81,20 @@ nav a:hover {
         padding: 20px;
         transition: width 0.2s;
       }
-  
+
       #mapImage {
         max-width: 1200px;
         width: 100%;
         height: auto;
         object-fit: contain;
       }
-  
+
       .resizer {
         width: 5px;
         background: #ccc;
         cursor: col-resize;
       }
-  
+
       .pdf-area {
         flex-grow: 1;
         background: #ffffff;
@@ -116,7 +107,7 @@ nav a:hover {
         scroll-behavior: smooth;
         transition: width 0.2s;
       }
-  
+
       canvas {
         margin: 0;
         padding: 0;
@@ -128,147 +119,158 @@ nav a:hover {
       }
     </style>
   </head>
-<body>
+  <body>
 
-  <nav>
-    <h2>에버론 : 아르카닉스 마법학교</h2>
-  
-    <details>
-      <summary><strong>프롤로그</strong></summary>
-      <a href="?page=prologue_elka.pdf&map=prologue_elka">[EP0] 엘카</a>
-      <a href="?page=prologue_miya.pdf&map=prologue_miya">[EP0] 미야 일'라우렐</a>
-      <a href="?page=prologue_vesper.pdf&map=prologue_vesper">[EP0] 베스퍼</a>
-      <a href="?page=prologue_arian.pdf&map=prologue_arian">[EP0] 아리안 체니아</a>
-    </details>
+    <nav>
+      <h2>에버론 : 아르카닉스 마법학교</h2>
 
-    <details open>
-      <summary><strong>아르카닉스 마법학교 : 최후의 전쟁의 그림자</strong></summary>
-      <a href="?page=ep1.pdf&map=ep1">1화. 아주 긴 시간표</a>
-      <a href="?page=ep2.pdf&map=ep2">2화. 첫번째 수업</a>
-      <a href="?page=ep3.pdf&map=ep3">3화. 순수한 피</a>
-      <a href="?page=ep4.pdf&map=ep4">4화. 두번째 날 수업</a>
-      <a href="?page=ep5.pdf&map=ep5">5화. 첫번째 의뢰</a>
-      <a href="?page=ep6.pdf&map=ep6">6화. 실습훈련?</a>
-      <a href="?page=ep7.pdf&map=ep7">7화. 도서관의 요정 파페라!</a>
-      <a href="?page=ep8.pdf&map=ep8">8화. 파이어볼은 아프다...</a>
-    </details>
-  </nav>
-  
-<div class="container">
-  <div class="map-area">
-    <img src="./maps/ep1/map1.png" alt="맵 이미지" id="mapImage">
-  </div>
-  <div class="resizer" id="resizer"></div>
-  <div class="pdf-area" id="content"></div>
-</div>
+      <details>
+        <summary><strong>프롤로그</strong></summary>
+        <a href="?page=prologue_elka.pdf&map=prologue_elka">[EP0] 엘카</a>
+        <a href="?page=prologue_miya.pdf&map=prologue_miya">[EP0] 미야 일'라우렐</a>
+        <a href="?page=prologue_vesper.pdf&map=prologue_vesper">[EP0] 베스퍼</a>
+        <a href="?page=prologue_arian.pdf&map=prologue_arian">[EP0] 아리안 체니아</a>
+      </details>
 
-<script>
-const urlParams = new URLSearchParams(window.location.search);
-const page = urlParams.get('page') || 'ep1.pdf';
-const mapFolder = urlParams.get('map') || 'ep1';
-const pdfUrl = `./pdfs/${page}`;
-const pdfjsLib = window['pdfjs-dist/build/pdf'];
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-const content = document.getElementById('content');
-const mapImage = document.getElementById('mapImage');
+      <details open>
+        <summary><strong>아르카닉스 마법학교 : 최후의 전쟁의 그림자</strong></summary>
+        <a href="?page=ep1.pdf&map=ep1">1화. 아주 긴 시간표</a>
+        <a href="?page=ep2.pdf&map=ep2">2화. 첫번째 수업</a>
+        <a href="?page=ep3.pdf&map=ep3">3화. 순수한 피</a>
+        <a href="?page=ep4.pdf&map=ep4">4화. 두번째 날 수업</a>
+        <a href="?page=ep5.pdf&map=ep5">5화. 첫번째 의뢰</a>
+        <a href="?page=ep6.pdf&map=ep6">6화. 실습훈련?</a>
+        <a href="?page=ep7.pdf&map=ep7">7화. 도서관의 요정 파페라!</a>
+        <a href="?page=ep8.pdf&map=ep8">8화. 파이어볼은 아프다...</a>
+        <a href="?page=ep9.pdf&map=ep9">9화. 신비한 수업</a>
+        <a href="?page=ep10.pdf&map=ep10">10화. 마법의 마을</a>
+        <a href="?page=ep11.pdf&map=ep11">11화. 신비한 마을</a>
+        <a href="?page=ep12.pdf&map=ep12">12화. 나른한 주말</a>
+        <a href="?page=ep13.pdf&map=ep13">13화. 비밀의 숲</a>
+        <a href="?page=ep14.pdf&map=ep14">14화. 첫번째 시험</a>
+      </details>
+    </nav>
 
-function getMapImage(pageNumber) {
-  if (mapFolder === "ep5") {
-    if (pageNumber === 1) return "./maps/ep5/map1.png";
-    if (pageNumber >= 2 && pageNumber <= 5) return "./maps/ep5/map2.png";
-    if (pageNumber === 6) return "./maps/ep5/map3.png";
-    if (pageNumber === 7) return "./maps/ep5/map4.png";
-    if (pageNumber >= 8 && pageNumber <= 29) return "./maps/ep5/map5.png";
-    if (pageNumber >= 30 && pageNumber <= 31) return "./maps/ep5/map6.png";
-    if (pageNumber >= 32 && pageNumber <= 46) return "./maps/ep5/map7.png";
-    if (pageNumber >= 47 && pageNumber <= 52) return "./maps/ep5/map8.png";
-    if (pageNumber >= 53 && pageNumber <= 59) return "./maps/ep5/map9.png";
-    if (pageNumber >= 60 && pageNumber <= 63) return "./maps/ep5/map10.png";
-    if (pageNumber >= 64 && pageNumber <= 96) return "./maps/ep5/map11.png";
-    if (pageNumber >= 97 && pageNumber <= 101) return "./maps/ep5/map12.png";
-    if (pageNumber >= 102 && pageNumber <= 107) return "./maps/ep5/map13.png";
-    if (pageNumber >= 108 && pageNumber <= 110) return "./maps/ep5/map14.png";
-    if (pageNumber >= 111 && pageNumber <= 118) return "./maps/ep5/map15.png";
-    if (pageNumber >= 119 && pageNumber <= 126) return "./maps/ep5/map16.png";
-    if (pageNumber >= 127 && pageNumber <= 132) return "./maps/ep5/map17.png";
-    if (pageNumber >= 133 && pageNumber <= 140) return "./maps/ep5/map18.png";
-    if (pageNumber >= 141 && pageNumber <= 167) return "./maps/ep5/map19.png";
-    if (pageNumber >= 168 && pageNumber <= 173) return "./maps/ep5/map20.png";
-    if (pageNumber >= 174 && pageNumber <= 194) return "./maps/ep5/map21.png";
-    if (pageNumber >= 195 && pageNumber <= 200) return "./maps/ep5/map22.png";
-    if (pageNumber >= 201 && pageNumber <= 205) return "./maps/ep5/map23.png";
-    if (pageNumber >= 206 && pageNumber <= 208) return "./maps/ep5/map24.png";
-    if (pageNumber >= 209 && pageNumber <= 241) return "./maps/ep5/map25.png";
-    if (pageNumber >= 242 && pageNumber <= 244) return "./maps/ep5/map26.png";
-    if (pageNumber >= 245 && pageNumber <= 246) return "./maps/ep5/map27.png";
-    if (pageNumber >= 247 && pageNumber <= 250) return "./maps/ep5/map28.png";
-    if (pageNumber >= 251 && pageNumber <= 257) return "./maps/ep5/map29.png";
-    if (pageNumber >= 258 && pageNumber <= 277) return "./maps/ep5/map3.png";
-  }
-  return `./maps/${mapFolder}/map1.png`;
-}
+    <div class="container">
+      <div class="map-area">
+        <img src="./maps/ep1/map1.png" alt="맵 이미지" id="mapImage">
+      </div>
+      <div class="resizer" id="resizer"></div>
+      <div class="pdf-area" id="content"></div>
+    </div>
 
-let pdfDoc = null;
-let observer = null;
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const page = urlParams.get('page') || 'ep1.pdf';
+      const mapFolder = urlParams.get('map') || 'ep1';
+      const pdfUrl = `./pdfs/${page}`;
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+      const content = document.getElementById('content');
+      const mapImage = document.getElementById('mapImage');
 
-pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
-  pdfDoc = pdf;
-  for (let num = 1; num <= pdf.numPages; num++) {
-    const canvas = document.createElement('canvas');
-    canvas.dataset.pageNumber = num;
-    canvas.classList.add('pdf-page');
-    content.appendChild(canvas);
-  }
-
-  observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const canvas = entry.target;
-        const pageNumber = parseInt(canvas.dataset.pageNumber);
-        if (!canvas.dataset.rendered) {
-          pdfDoc.getPage(pageNumber).then(page => {
-            const scale = 1.5;
-            const viewport = page.getViewport({ scale: scale });
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            const renderContext = { canvasContext: canvas.getContext('2d'), viewport: viewport };
-            page.render(renderContext);
-            canvas.dataset.rendered = true;
-          });
+      function getMapImage(pageNumber) {
+        const fixedMapEpisodes = ["ep9", "ep10", "ep11", "ep12", "ep13", "ep14"];
+        if (fixedMapEpisodes.includes(mapFolder)) {
+          return `./maps/${mapFolder}/map1.png`;
         }
+
+        if (mapFolder === "ep5") {
+          if (pageNumber === 1) return "./maps/ep5/map1.png";
+          if (pageNumber >= 2 && pageNumber <= 5) return "./maps/ep5/map2.png";
+          if (pageNumber === 6) return "./maps/ep5/map3.png";
+          if (pageNumber === 7) return "./maps/ep5/map4.png";
+          if (pageNumber >= 8 && pageNumber <= 29) return "./maps/ep5/map5.png";
+          if (pageNumber >= 30 && pageNumber <= 31) return "./maps/ep5/map6.png";
+          if (pageNumber >= 32 && pageNumber <= 46) return "./maps/ep5/map7.png";
+          if (pageNumber >= 47 && pageNumber <= 52) return "./maps/ep5/map8.png";
+          if (pageNumber >= 53 && pageNumber <= 59) return "./maps/ep5/map9.png";
+          if (pageNumber >= 60 && pageNumber <= 63) return "./maps/ep5/map10.png";
+          if (pageNumber >= 64 && pageNumber <= 96) return "./maps/ep5/map11.png";
+          if (pageNumber >= 97 && pageNumber <= 101) return "./maps/ep5/map12.png";
+          if (pageNumber >= 102 && pageNumber <= 107) return "./maps/ep5/map13.png";
+          if (pageNumber >= 108 && pageNumber <= 110) return "./maps/ep5/map14.png";
+          if (pageNumber >= 111 && pageNumber <= 118) return "./maps/ep5/map15.png";
+          if (pageNumber >= 119 && pageNumber <= 126) return "./maps/ep5/map16.png";
+          if (pageNumber >= 127 && pageNumber <= 132) return "./maps/ep5/map17.png";
+          if (pageNumber >= 133 && pageNumber <= 140) return "./maps/ep5/map18.png";
+          if (pageNumber >= 141 && pageNumber <= 167) return "./maps/ep5/map19.png";
+          if (pageNumber >= 168 && pageNumber <= 173) return "./maps/ep5/map20.png";
+          if (pageNumber >= 174 && pageNumber <= 194) return "./maps/ep5/map21.png";
+          if (pageNumber >= 195 && pageNumber <= 200) return "./maps/ep5/map22.png";
+          if (pageNumber >= 201 && pageNumber <= 205) return "./maps/ep5/map23.png";
+          if (pageNumber >= 206 && pageNumber <= 208) return "./maps/ep5/map24.png";
+          if (pageNumber >= 209 && pageNumber <= 241) return "./maps/ep5/map25.png";
+          if (pageNumber >= 242 && pageNumber <= 244) return "./maps/ep5/map26.png";
+          if (pageNumber >= 245 && pageNumber <= 246) return "./maps/ep5/map27.png";
+          if (pageNumber >= 247 && pageNumber <= 250) return "./maps/ep5/map28.png";
+          if (pageNumber >= 251 && pageNumber <= 257) return "./maps/ep5/map29.png";
+          if (pageNumber >= 258 && pageNumber <= 277) return "./maps/ep5/map3.png";
+        }
+
+        return `./maps/${mapFolder}/map1.png`;
       }
-    });
-  }, { root: content, threshold: 0.1 });
 
-  document.querySelectorAll('.pdf-page').forEach(canvas => observer.observe(canvas));
-});
+      let pdfDoc = null;
+      let observer = null;
 
-// 맵 이미지 업데이트
-content.addEventListener('scroll', () => {
-  const canvases = document.querySelectorAll('.pdf-page');
-  let closest = null;
-  let minDist = Infinity;
-  const midY = window.innerHeight / 2;
+      pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+        pdfDoc = pdf;
+        for (let num = 1; num <= pdf.numPages; num++) {
+          const canvas = document.createElement('canvas');
+          canvas.dataset.pageNumber = num;
+          canvas.classList.add('pdf-page');
+          content.appendChild(canvas);
+        }
 
-  canvases.forEach(canvas => {
-    const rect = canvas.getBoundingClientRect();
-    const center = rect.top + rect.height / 2;
-    const dist = Math.abs(midY - center);
-    if (dist < minDist) {
-      minDist = dist;
-      closest = canvas;
-    }
-  });
+        observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const canvas = entry.target;
+              const pageNumber = parseInt(canvas.dataset.pageNumber);
+              if (!canvas.dataset.rendered) {
+                pdfDoc.getPage(pageNumber).then(page => {
+                  const scale = 1.5;
+                  const viewport = page.getViewport({ scale: scale });
+                  canvas.height = viewport.height;
+                  canvas.width = viewport.width;
+                  const renderContext = { canvasContext: canvas.getContext('2d'), viewport: viewport };
+                  page.render(renderContext);
+                  canvas.dataset.rendered = true;
+                });
+              }
+            }
+          });
+        }, { root: content, threshold: 0.1 });
 
-  if (closest) {
-    const pageNumber = parseInt(closest.dataset.pageNumber, 10);
-    const newSrc = getMapImage(pageNumber);
-    if (!mapImage.src.endsWith(newSrc.replace('./', ''))) {
-      mapImage.src = newSrc;
-    }
-  }
-});
-</script>
+        document.querySelectorAll('.pdf-page').forEach(canvas => observer.observe(canvas));
+      });
 
-</body>
+      content.addEventListener('scroll', () => {
+        const canvases = document.querySelectorAll('.pdf-page');
+        let closest = null;
+        let minDist = Infinity;
+        const midY = window.innerHeight / 2;
+
+        canvases.forEach(canvas => {
+          const rect = canvas.getBoundingClientRect();
+          const center = rect.top + rect.height / 2;
+          const dist = Math.abs(midY - center);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = canvas;
+          }
+        });
+
+        if (closest) {
+          const pageNumber = parseInt(closest.dataset.pageNumber, 10);
+          const newSrc = getMapImage(pageNumber);
+          if (!mapImage.src.endsWith(newSrc.replace('./', ''))) {
+            mapImage.src = newSrc;
+          }
+        }
+      });
+    </script>
+
+  </body>
 </html>
